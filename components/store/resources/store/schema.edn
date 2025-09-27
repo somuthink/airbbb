@@ -1,0 +1,112 @@
+{:user
+ [{:db/ident :user/id
+   :db/valueType :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc         "users uuid"}
+  {:db/ident :user/name
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/doc         "user name"}
+  {:db/ident :user/email
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc         "user unique email addres"}
+  {:db/ident :user/password
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/doc         "user hashed password"}
+  {:db/ident :user/role
+   :db/valueType :db.type/keyword
+   :db/cardinality :db.cardinality/one
+   :db/doc         "user admin status"}
+  {:db/ident :user/tickets
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/many
+   :db/doc         "user bought tickets"}]
+
+ :place
+ [{:db/ident :place/id
+   :db/valueType :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc         "place uuid"}
+  {:db/ident :place/name
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/doc         "place name"}
+  {:db/ident :place/slug
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc         "place slug"}
+  {:db/ident :place/description
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/doc         "short description of a place"}
+  {:db/ident :place/city
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/index true
+   :db/doc         "indexed city of a place"}
+  {:db/ident :place/stars
+   :db/valueType :db.type/long
+   :db/cardinality :db.cardinality/one
+   :db/doc         "place stars, from 0 to 5"}
+  {:db/ident :place/rooms
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/many
+   :db/doc         "place rooms"}]
+
+ :room
+ [{:db/ident :room/id
+   :db/valueType :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc         "room uuid"}
+  {:db/ident :room/name
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/doc         "room name"}
+  {:db/ident :room/slug
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/doc         "room slug"}
+  {:db/ident :room/type
+   :db/valueType :db.type/keyword
+   :db/cardinality :db.cardinality/one
+   :db/doc         "room type #{:standart :larage :premium} "}
+  {:db/ident :room/num-rooms
+   :db/valueType :db.type/long
+   :db/cardinality :db.cardinality/one
+   :db/doc         "number of physical 'rooms' in a room "}
+  {:db/ident :room/price
+   :db/valueType :db.type/long
+   :db/cardinality :db.cardinality/one
+   :db/doc         "price of a room"}
+  {:db/ident :room/books
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/many
+   :db/doc         "room books by users"}]
+
+ :book
+ [{:db/ident :book/id
+   :db/valueType :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc         "book uuid"}
+  {:db/ident :book/owner
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one
+   :db/doc         "user who owns a book"}
+  {:db/ident :book/start
+   :db/valueType :db.type/instant
+   :db/index true
+   :db/cardinality :db.cardinality/one
+   :db/doc         "start time of the book"}
+  {:db/ident :book/end
+   :db/valueType :db.type/instant
+   :db/index true
+   :db/cardinality :db.cardinality/one
+   :db/doc         "end time of the book"}]}

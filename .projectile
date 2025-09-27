@@ -1,0 +1,7 @@
+- *.cpcache
+- *.DS_Store
+- *.nrepl-port
+- *.lsp
+- *.keep
+- *.clj-kondo
+-.projectile

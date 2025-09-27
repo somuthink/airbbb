@@ -1,0 +1,9 @@
+services:
+  datomic-airbbb-transactor:
+    image: filipesilva/datomic-pro-sqlite:latest
+    ports:
+      - "4334:4334"
+    volumes:
+      - ./storage:/usr/storage
+
+

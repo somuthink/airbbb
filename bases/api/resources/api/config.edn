@@ -1,0 +1,19 @@
+{:secrets  #include #join [#env HOME "/.secrets.edn"]
+
+ :schema/load {:resource-prefix "store/schema"},
+
+ :schema/validation #ig/ref :schema/load,
+
+ :db/datomic {:store-schema  #ig/ref :schema/load
+              :uri #env DB_URI},
+
+ :router/routes  #ig/ref :schema/validation
+
+ :app/router {:jwt-secret #ref [:secrets :airbbb-jwt-secret]
+              :schema  #ig/ref :schema/validation
+              :store-conn #ig/ref  :db/datomic
+              :routes #ig/ref :router/routes}
+
+ :app/handler {:router #ig/ref :app/router}
+
+ :server/http {:port #long #env BACK_PORT, :handler #ig/ref :app/handler}}
