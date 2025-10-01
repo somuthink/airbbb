@@ -3,7 +3,7 @@
 (defn datomic->malli [schema]
   (reduce
    (fn [acc {:keys [db/ident :db/cardinality db/valueType]}]
-     (if (#{:user/password} ident)
+     (if (#{:user/password :room/books} ident)
        acc
        (conj acc `[~ident
                    ~@(when (or (#{:node/connection  :node/import} ident) (= cardinality :db.cardinality/many)) [{:optional true}])

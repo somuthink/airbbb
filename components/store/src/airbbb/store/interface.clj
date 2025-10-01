@@ -1,5 +1,6 @@
 (ns airbbb.store.interface
   (:require
+   [airbbb.store.core :as core]
    [airbbb.store.init :as init]
    [airbbb.store.place :as place]
    [airbbb.store.room :as room]
@@ -34,6 +35,9 @@
 (defn place-by-slug [db place-slug]
   (place/by-slug db place-slug))
 
+(defn pull-place-by-flter [db city stars]
+  (place/pull-by-filter db city stars))
+
 ;; room
 (defn room-by-id [db room-id]
   (room/by-id db room-id))
@@ -48,9 +52,10 @@
   @(d/transact conn data))
 
 (defn e->map [e]
-  (->> (d/touch e)
-       keys
-       (select-keys e)))
+  (core/e->map e))
+
+(defn pull-e [db {:keys [db/id]}]
+  (d/pull db '[] id))
 
 (defn pull-after-tx
   ([tx e]

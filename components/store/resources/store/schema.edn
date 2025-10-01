@@ -27,12 +27,7 @@
    :db/doc         "user bought tickets"}]
 
  :place
- [{:db/ident :place/id
-   :db/valueType :db.type/uuid
-   :db/cardinality :db.cardinality/one
-   :db/unique :db.unique/value
-   :db/doc         "place uuid"}
-  {:db/ident :place/name
+ [{:db/ident :place/name
    :db/valueType :db.type/string
    :db/cardinality :db.cardinality/one
    :db/doc         "place name"}
@@ -57,6 +52,7 @@
   {:db/ident :place/rooms
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/many
+   :db/isComponent true
    :db/doc         "place rooms"}]
 
  :room
@@ -92,6 +88,11 @@
 
  :book
  [{:db/ident :book/id
+   :db/valueType :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc         "book uuid"}
+  {:db/ident :book/id
    :db/valueType :db.type/uuid
    :db/cardinality :db.cardinality/one
    :db/unique :db.unique/value

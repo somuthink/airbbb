@@ -1,8 +1,9 @@
 (ns airbbb.api.middleware
   (:require
+   [airbbb.api.handlers.helper :as helper]
    [airbbb.store.interface :as store]
    [buddy.sign.jwt :as jwt]
-   [fmnoise.flow :refer [call else]]
+   [fmnoise.flow :refer [call else then]]
    [reitit.coercion.malli]
    [reitit.openapi :as openapi]
    [reitit.ring.coercion :as coercion]
@@ -30,6 +31,16 @@
               (else {:status 401
                      :body "bad auth token"}))))})
 
+(def role
+  {:name ::role
+   :description "check if user satisfies role"
+   :wrap (fn [handler role]
+           (fn [{:keys [identity] :as request}]
+             (if (= role (:user/role identity))
+               (handler request)
+               {:status 401
+                :body "no access to the resourse"})))})
+
 (def databases
   {:name ::databases
    :description "Middleware that adds store to req"
@@ -38,6 +49,51 @@
              (handler
               (assoc request :store {:store-conn store-conn
                                      :store-db (store/create-db store-conn)}))))})
+
+(def place-slug->place
+  {:name ::project-slug->place
+   :description "lookups the place by slug "
+   :wrap (fn [handler]
+           (fn [{{:keys [store-db]} :store
+                 {{:keys [place-slug]} :path} :parameters
+                 :as request}]
+             (->>
+              (call store/place-by-slug store-db  place-slug)
+              (then #(if %
+                       (handler (assoc request :place %))
+                       {:status 403
+                        :body {:error "no place with such slug" :details {:place/slug place-slug}}}))
+              (else helper/format-fail))))})
+
+(def room-slug->room
+  {:name ::project-slug->place
+   :description "lookups the room by rooom and place slug"
+   :wrap (fn [handler]
+           (fn [{{:keys [store-db]} :store
+                 {{:keys [place-slug room-slug]} :path} :parameters
+                 :as request}]
+             (->>
+              (call store/room-by-slug store-db place-slug  room-slug)
+              (then #(if %
+                       (handler (assoc request :room %))
+                       {:status 403
+                        :body {:error "no room with such slug" :details {:room/slug room-slug}}}))
+              (else helper/format-fail))))})
+
+(def room-id->room
+  {:name ::project-slug->place
+   :description "lookups the  room by id"
+   :wrap (fn [handler]
+           (fn [{{:keys [store-db]} :store
+                 {{:keys [room-id]} :path} :parameters
+                 :as request}]
+             (->>
+              (call store/room-by-id store-db  room-id)
+              (then #(if %
+                       (handler (assoc request :room %))
+                       {:status 403
+                        :body {:error "no room with such id" :details {:room/id room-id}}}))
+              (else helper/format-fail))))})
 
 (def secret
   {:name ::secret
