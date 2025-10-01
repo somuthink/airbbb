@@ -35,15 +35,15 @@
 (defn place-by-slug [db place-slug]
   (place/by-slug db place-slug))
 
-(defn pull-place-by-flter [db city stars]
-  (place/pull-by-filter db city stars))
+(defn pull-place-by-flter [db sort-cond order city stars]
+  (place/pull-by-filter db sort-cond order city stars))
 
 ;; room
 (defn room-by-id [db room-id]
   (room/by-id db room-id))
 
-(defn room-by-slug [db place-slug room-slug]
-  (room/by-slug db place-slug room-slug))
+(defn room-by-slug [db place-eid room-slug]
+  (room/by-slug db place-eid room-slug))
 
 (defn change [conn eid data]
   @(d/transact conn [(assoc data :db/id eid)]))

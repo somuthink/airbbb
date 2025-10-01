@@ -70,10 +70,11 @@
    :description "lookups the room by rooom and place slug"
    :wrap (fn [handler]
            (fn [{{:keys [store-db]} :store
-                 {{:keys [place-slug room-slug]} :path} :parameters
+                 {{:keys [room-slug]} :path} :parameters
+                 {place-eid :db/id :as place} :place
                  :as request}]
              (->>
-              (call store/room-by-slug store-db place-slug  room-slug)
+              (call store/room-by-slug store-db place-eid room-slug)
               (then #(if %
                        (handler (assoc request :room %))
                        {:status 403

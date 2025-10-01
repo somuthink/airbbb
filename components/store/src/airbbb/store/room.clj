@@ -5,10 +5,9 @@
 (defn by-id [db id]
   (d/entity db [:room/id id]))
 
-(defn by-slug [db place-slug slug]
+(defn by-slug [db place-eid slug]
   (d/entity db
-            (d/q '[:find ?place
-                   :in $ ?place-slug ?room-slug
-                   :where  [?place :place/slug ?place-slug]
-                   [?place :place/rooms ?room]
-                   [?room :room/slug ?room-slug]] db place-slug slug)))
+            (d/q '[:find ?room .
+                   :in $ ?place ?room-slug
+                   :where  [?place :place/rooms ?room]
+                   [?room :room/slug ?room-slug]] db place-eid slug)))

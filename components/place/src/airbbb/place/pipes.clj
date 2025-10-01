@@ -22,4 +22,4 @@
   (->>
    (prepare/patch eid data)
    (call store/change store-conn eid)
-   (then-call #(store/pull-after-tx % eid))))
+   (then-call #(store/pull-after-tx % '[* {:place/rooms []}] eid))))

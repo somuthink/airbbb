@@ -9,6 +9,6 @@
          :place/rooms (map room/prepare-create rooms)))
 
 (defn patch [eid {:keys [place/name] :as data}]
-  (assoc data
-         :db/id eid
-         :place/slug (sluj name)))
+  (as-> data d
+    (assoc d :db/id eid)
+    (if name (assoc d :place/slug (sluj name)) d)))

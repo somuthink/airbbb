@@ -16,3 +16,7 @@
                  :else [k v])))
         e))
 
+(defn remap-query
+  [{args :args :as m}]
+  {:query (dissoc m :args)
+   :args args})

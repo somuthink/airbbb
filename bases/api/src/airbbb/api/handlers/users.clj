@@ -46,16 +46,6 @@
       :body (store/e->map identity)})
    :responses {200  {:body schema}}})
 
-(defn delete []
-  {:openapi {:operationId :delete-user}
-   :handler
-   (fn [{{:keys [store-conn]} :store
-         {eid :db/id :as identity} :identity}]
-     (store/excise store-conn eid)
-     {:status 204
-      :body {}})
-   :responses {204 {:description "deleted"}}})
-
 (defn patch [schema]
   {:openapi {:operationId :patch-user}
    :parameters {:body   (-> schema

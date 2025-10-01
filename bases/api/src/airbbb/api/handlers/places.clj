@@ -9,15 +9,17 @@
 
 (defn all [schema]
   {:parameters {:query [:map
-                        [:city :string]
-                        [:stars [:vector :int]]]}
+                        [:sort {:default :place/name} [:enum :place/name :place/stars]]
+                        [:order {:default :desc} [:enum :asc :desc]]
+                        [:city {:optional true} :string]
+                        [:stars {:optional true} [:vector :int]]]}
    :handler (fn [{{:keys [store-db]} :store
-                  {{:keys [city stars]} :query} :parameters}]
-              (->> (call store/pull-place-by-flter store-db  city stars)
+                  {{:keys [sort order city stars]} :query} :parameters}]
+              (->> (call store/pull-place-by-flter store-db sort order  city stars)
                    (then   (partial assoc
                                     {:status 200} :body))
                    (else helper/format-fail)))
-   :responses {200 {:body [:vector schema]}}})
+   :responses {200 {:body [:vector (mu/dissoc schema :place/rooms)]}}})
 
 (defn create [schema room-schema]
   {:middleware [mw/auth-control [mw/role :admin]]
@@ -36,22 +38,12 @@
    :responses {200 {:body (mu/assoc schema :place/rooms [:vector room-schema])}}})
 
 (defn info [schema]
-  {:openapi {:operationId :me-user}
+  {:openapi {:operationId :info-place}
    :handler
    (fn [{:keys [place]}]
      {:status 200
       :body (store/e->map place)})
    :responses {200  {:body schema}}})
-
-(defn delete []
-  {:openapi {:operationId :delete-place}
-   :handler
-   (fn [{{:keys [store-conn]} :store
-         {eid :db/id} :place}]
-     (store/excise store-conn eid)
-     {:status 204
-      :body {}})
-   :responses {204 {:description "deleted"}}})
 
 (defn patch [schema]
   {:openapi {:operationId :patch-place}
@@ -66,4 +58,4 @@
           (then   (partial assoc
                            {:status 200} :body))
           (else helper/format-fail)))
-   :responses {200 {:body schema}}})
+   :responses {200 {:body (mu/dissoc schema :place/rooms)}}})
