@@ -1,4 +1,4 @@
 {:paths ["src" "resources"]
- :deps {}
+ :deps {com.github.rawleyfowler/sluj {:mvn/version "1.0.2"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}
