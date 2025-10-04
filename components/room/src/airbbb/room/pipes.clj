@@ -2,7 +2,31 @@
   (:require
    [airbbb.room.prepare :as prepare]
    [airbbb.store.interface :as store]
-   [fmnoise.flow :refer [call fail-with then-call]]))
+   [fmnoise.flow :refer [call fail-with then then-call]]))
+
+(defn place-query [{:keys [store-db]}
+                   {place-eid :db/id}
+                   sort
+                   order
+                   types
+                   num-rooms
+                   occupancy]
+  (->>
+   (call store/pull-rooms-by-filter store-db [place-eid] types num-rooms occupancy)
+   (then #(store/sort-order sort order %))))
+
+(defn place-names-query [{:keys [store-db]}
+                         sort
+                         order
+                         place-names
+                         types
+                         num-rooms
+                         occupancy]
+  (->>
+   (when place-names
+     (call store/places-by-names store-db place-names))
+   (then-call #(store/pull-rooms-by-filter store-db % types num-rooms occupancy))
+   (then #(store/sort-order sort order %))))
 
 (defn create [{:keys [store-db store-conn]}
               {place-eid :db/id place-slug :place/slug}

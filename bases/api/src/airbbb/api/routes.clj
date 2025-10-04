@@ -14,15 +14,13 @@
      :include-secret true
      :post (users-h/auth user-schema)}]
    ["/users"
-    {:tags #{"users"}}
-    [""
-     {:post (users-h/create user-schema)}]
-    ["/me"
-     {:conflicting true
-      :middleware [mw/auth-control]
-      :get (users-h/me user-schema)
-      :patch (users-h/patch user-schema)
-      :delete (helper-h/delete :identity)}]]
+    {:tags #{"users"}
+     :post (users-h/create user-schema)
+     :conflicting true
+     :middleware [mw/auth-control]
+     :get (users-h/me user-schema)
+     :patch (users-h/patch user-schema)
+     :delete (helper-h/delete :identity)}]
    ["/places"
     [""
      {:tags #{"places"}
@@ -41,21 +39,28 @@
       {:tags #{"rooms"}}
       [""
        {:conflicting true
+        :get (rooms-h/place room-schema)
         :post (rooms-h/create room-schema)}]
       ["/:room-slug"
        {:conflicting true
         :parameters {:path [:map [:room-slug :string]]}
         :middleware [mw/room-slug->room]
         :get (rooms-h/info room-schema)}]]]]
-   ["/rooms/:room-id"
-    {:middleware [mw/room-id->room]}
+   ["/rooms"
     [""
      {:tags #{"rooms"}
-      :conflicting true
-      :parameters {:path [:map [:room-id :uuid]]}
-      :get (rooms-h/info room-schema)
-      :patch (rooms-h/patch room-schema)
-      :delete (helper-h/delete :room)}]
-    ["/books"
-     {:post placeholder-handler}]]
+      :get (rooms-h/all room-schema)}]
+    ["/:room-id"
+     {:conflicting true
+      :middleware [mw/room-id->room]}
+     [""
+      {:tags #{"rooms"}
+       :conflicting true
+       :parameters {:path [:map [:room-id :uuid]]}
+       :get (rooms-h/info room-schema)
+       :patch (rooms-h/patch room-schema)
+       :delete (helper-h/delete :room)}]
+     ["/books"
+      {:tags #{"books"}
+       :post placeholder-handler}]]]
    ["/books/:book-id"]])

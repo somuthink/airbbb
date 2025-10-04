@@ -20,3 +20,9 @@
   [{args :args :as m}]
   {:query (dissoc m :args)
    :args args})
+
+(defn sort-order [sort-cond order s]
+  (sort-by
+   sort-cond
+   (case order :asc #(compare %1 %2) :desc #(compare %2 %1))
+   s))

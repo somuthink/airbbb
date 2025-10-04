@@ -77,6 +77,10 @@
    :db/valueType :db.type/long
    :db/cardinality :db.cardinality/one
    :db/doc         "number of physical 'rooms' in a room "}
+  {:db/ident :room/occupancy
+   :db/valueType :db.type/long
+   :db/cardinality :db.cardinality/one
+   :db/doc         "number of how many people can live "}
   {:db/ident :room/price
    :db/valueType :db.type/long
    :db/cardinality :db.cardinality/one

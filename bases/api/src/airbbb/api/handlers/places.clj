@@ -15,7 +15,8 @@
                         [:stars {:optional true} [:vector :int]]]}
    :handler (fn [{{:keys [store-db]} :store
                   {{:keys [sort order city stars]} :query} :parameters}]
-              (->> (call store/pull-place-by-flter store-db sort order  city stars)
+              (->> (call store/pull-places-by-flter store-db city stars)
+                   (then #(store/sort-order sort order %))
                    (then   (partial assoc
                                     {:status 200} :body))
                    (else helper/format-fail)))
