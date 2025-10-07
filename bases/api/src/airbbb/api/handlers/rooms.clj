@@ -42,7 +42,7 @@
    :handler
    (fn [{:keys [room]}]
      {:status 200
-      :body (store/e->map room)})
+      :body (store/e->map room #{:room/books})})
    :responses {200  {:body schema}}})
 
 (defn create [schema]

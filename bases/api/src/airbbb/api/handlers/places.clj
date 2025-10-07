@@ -43,7 +43,7 @@
    :handler
    (fn [{:keys [place]}]
      {:status 200
-      :body (store/e->map place)})
+      :body (store/e->map place #{:place/rooms})})
    :responses {200  {:body schema}}})
 
 (defn patch [schema]

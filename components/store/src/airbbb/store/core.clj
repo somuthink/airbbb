@@ -1,18 +1,19 @@
 (ns airbbb.store.core)
 
 (defn e->map
-  [e]
+  [e ignore-keys]
   (into {}
         (map (fn [[k v]]
                (cond
+                 (ignore-keys k)
+                 nil
 
                  (instance? datomic.query.EntityMap v)
-                 [k (e->map v)]
+                 [k (e->map v ignore-keys)]
 
                  (and (coll? v)
                       (every? #(instance? datomic.query.EntityMap %) v))
-                 [k (mapv e->map v)]
-
+                 [k (mapv #(e->map % ignore-keys) v)]
                  :else [k v])))
         e))
 
