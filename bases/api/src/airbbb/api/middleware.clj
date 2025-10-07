@@ -3,6 +3,7 @@
    [airbbb.api.handlers.helper :as helper]
    [airbbb.store.interface :as store]
    [buddy.sign.jwt :as jwt]
+   [clojure.core :as c]
    [fmnoise.flow :refer [call else then]]
    [reitit.coercion.malli]
    [reitit.openapi :as openapi]
@@ -28,8 +29,8 @@
                           (store/user-by-id store-db)
                           (assoc request :identity)
                           handler))
-              (else {:status 401
-                     :body "bad auth token"}))))})
+              (else (constantly {:status 401
+                                 :body {:msg "bad auth token"}})))))})
 
 (def role
   {:name ::role
