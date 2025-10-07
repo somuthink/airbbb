@@ -1,7 +1,16 @@
 (ns airbbb.store.room
   (:require
+   [airbbb.store.book :as book]
    [airbbb.store.core :as core]
    [datomic.api :as d]))
+
+(defn pull-by-place-book-start-end [db place-eid book-start book-end]
+  (d/q '[:find [(pull ?room [* {:room/books []}]) ...]
+         :in $ % ?place ?book-start ?book-end
+         :where
+         [?place :place/rooms ?room]
+         (available ?room ?book-start ?book-end)]
+       db book/rules place-eid book-start book-end))
 
 (defn pull-by-filter [db  place-eids types num-rooms occupancy]
   (d/query

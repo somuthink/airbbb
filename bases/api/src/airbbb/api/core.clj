@@ -6,11 +6,14 @@
    [airbbb.api.routes :as routes]
    [airbbb.store.interface :as store]
    [clojure.edn :as edn]
+   [clojure.instant :as inst]
    [clojure.java.io :as io]
    [integrant.core :as ig]
-   [malli.util :as mu]
+   [malli.core :as mc]
+   [malli.registry :as mr]
+   [malli.transform :as mt]
    [muuntaja.core :as m]
-   [reitit.coercion.malli]
+   [reitit.coercion.malli :as rcm]
    [reitit.dev.pretty :as pretty]
    [reitit.ring :as ring]
    [reitit.ring.spec :as spec]
@@ -23,6 +26,10 @@
       edn/read-string))
 
 (defmethod ig/init-key :schema/validation [_ store-schema]
+  (mr/set-default-registry!
+   (mr/composite-registry
+    (mc/default-schemas)
+    {:time (mc/-simple-schema {:type :time, :pred inst?})}))
   (update-vals
    store-schema
    store/store->validate))
@@ -46,11 +53,31 @@
    {:validate spec/validate
     :exception pretty/exception
     :data {:muuntaja m/instance
-           :coercion (reitit.coercion.malli/create
-                      {:compile mu/closed-schema
-                       :strip-extra-keys true
-                       :default-values true
-                       :options nil})
+           :coercion (rcm/create
+                      (let [time-transformer (mt/transformer
+                                              {:name :time
+                                               :decoders {:time inst/read-instant-date}
+                                               :encoders {:time #(java.util.Date/from %)}})
+                            custom-transformer (mt/transformer
+                                                mt/strip-extra-keys-transformer
+                                                mt/string-transformer
+                                                time-transformer)]
+
+                        (-> rcm/default-options
+                            (assoc-in  [:transformers :string :default] custom-transformer)
+                            (assoc-in  [:transformers :body] {:default rcm/default-transformer-provider
+                                                              :formats {"application/json"
+                                                                        (mt/transformer
+                                                                         mt/strip-extra-keys-transformer
+                                                                         mt/json-transformer
+                                                                         time-transformer)}})
+                            (assoc-in  [:transformers :response] {:default custom-transformer
+                                                                  :formats {"application/json"
+                                                                            (mt/transformer
+                                                                             mt/strip-extra-keys-transformer
+                                                                             mt/json-transformer
+                                                                             time-transformer)}})
+                            (dissoc :lite))))
            :middleware (-> opts
                            (dissoc :routes)
                            mw/middlewares)}}))

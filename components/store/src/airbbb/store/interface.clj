@@ -1,5 +1,6 @@
 (ns airbbb.store.interface
   (:require
+   [airbbb.store.book :as book]
    [airbbb.store.core :as core]
    [airbbb.store.init :as init]
    [airbbb.store.place :as place]
@@ -51,6 +52,14 @@
 (defn pull-rooms-by-filter [db place-eids room-types room-num-rooms room-occupancy]
   (room/pull-by-filter db place-eids room-types room-num-rooms room-occupancy))
 
+(defn pull-rooms-by-place-book-start-end [db place-eid book-start book-end]
+  (room/pull-by-place-book-start-end db place-eid book-start book-end))
+
+;; books
+
+(defn book-available? [db room-eid book-start book-end]
+  (book/available? db room-eid book-start book-end))
+
 (defn change [conn eid data]
   @(d/transact conn [(assoc data :db/id eid)]))
 
@@ -60,8 +69,8 @@
 (defn sort-order [sort-cond order s]
   (core/sort-order sort-cond order s))
 
-(defn e->map [e]
-  (core/e->map e))
+(defn e->map [e ignore-keys]
+  (core/e->map e ignore-keys))
 
 (defn pull-e [db {:keys [db/id]}]
   (d/pull db '[] id))

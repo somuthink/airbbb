@@ -11,6 +11,7 @@
                       :db.type/ref (if (= cardinality :db.cardinality/many)
                                      [:vector :any]
                                      [:map {:closed false}])
+                      :db.type/instant [:time {:json-schema/format "date-time"}]
                       :db.type/uri :string
                       :db.type/float :double
                       :db.type/string :string

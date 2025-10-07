@@ -1,14 +1,13 @@
 {:aliases  {:dev {:extra-paths ["development/src"]
 
-                  :extra-deps {
-
-                               poly/store {:local/root "components/store"}
+                  :extra-deps {poly/store {:local/root "components/store"}
                                poly/user {:local/root "components/user"}
                                poly/place {:local/root "components/place"}
                                poly/room {:local/root "components/room"}
+                               poly/book {:local/root "components/book"}
 
                                poly/api {:local/root "bases/api"}
-                               
+
                                aero/aero {:mvn/version "1.1.6"}
                                integrant/integrant {:mvn/version "0.13.1"}
                                integrant/repl {:mvn/version "0.4.0"}
@@ -18,7 +17,6 @@
                                org.clojure/clojure {:mvn/version "1.11.1"}}}
 
             :test {:extra-paths []}
-
 
             :portal {:extra-deps {djblue/portal {:mvn/version "0.60.2"}}}
 

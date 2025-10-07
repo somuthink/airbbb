@@ -96,11 +96,6 @@
    :db/cardinality :db.cardinality/one
    :db/unique :db.unique/value
    :db/doc         "book uuid"}
-  {:db/ident :book/id
-   :db/valueType :db.type/uuid
-   :db/cardinality :db.cardinality/one
-   :db/unique :db.unique/value
-   :db/doc         "book uuid"}
   {:db/ident :book/owner
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one

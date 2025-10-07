@@ -1,5 +1,6 @@
 (ns airbbb.api.routes
   (:require
+   [airbbb.api.handlers.books :as books-h]
    [airbbb.api.handlers.helper :as helper-h]
    [airbbb.api.handlers.places :as places-h]
    [airbbb.api.handlers.rooms :as rooms-h]
@@ -8,17 +9,19 @@
 
 (def placeholder-handler (constantly {:status 200}))
 
-(defn routes [{user-schema :user place-schema :place room-schema :room}]
+(defn routes [{user-schema :user
+               place-schema :place
+               room-schema :room
+               book-schema :book}]
   [["/auth"
     {:tags #{"auth"}
      :include-secret true
      :post (users-h/auth user-schema)}]
    ["/users"
     {:tags #{"users"}
-     :post (users-h/create user-schema)
      :conflicting true
-     :middleware [mw/auth-control]
-     :get (users-h/me user-schema)
+     :post (users-h/create user-schema)
+     :get (users-h/info user-schema)
      :patch (users-h/patch user-schema)
      :delete (helper-h/delete :identity)}]
    ["/places"
@@ -45,22 +48,27 @@
        {:conflicting true
         :parameters {:path [:map [:room-slug :string]]}
         :middleware [mw/room-slug->room]
-        :get (rooms-h/info room-schema)}]]]]
+        :get (rooms-h/info room-schema)}]]
+     ["/books/available"
+      {:tags #{"books"}
+       :get (books-h/available book-schema room-schema)}]]]
    ["/rooms"
     [""
      {:tags #{"rooms"}
       :get (rooms-h/all room-schema)}]
     ["/:room-id"
      {:conflicting true
+      :parameters {:path [:map [:room-id :uuid]]}
       :middleware [mw/room-id->room]}
      [""
       {:tags #{"rooms"}
        :conflicting true
-       :parameters {:path [:map [:room-id :uuid]]}
        :get (rooms-h/info room-schema)
        :patch (rooms-h/patch room-schema)
        :delete (helper-h/delete :room)}]
      ["/books"
       {:tags #{"books"}
-       :post placeholder-handler}]]]
+       :get placeholder-handler
+       :post (books-h/create book-schema)}]]]
+
    ["/books/:book-id"]])
