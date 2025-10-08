@@ -1,6 +1,7 @@
 {:aliases  {:dev {:extra-paths ["development/src"]
 
                   :extra-deps {poly/store {:local/root "components/store"}
+                               poly/time {:local/root "components/time"}
                                poly/user {:local/root "components/user"}
                                poly/place {:local/root "components/place"}
                                poly/room {:local/root "components/room"}
