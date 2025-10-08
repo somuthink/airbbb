@@ -27,8 +27,8 @@
                           :sub
                           parse-uuid
                           (store/user-by-id store-db)
-                          (assoc request :identity)
-                          handler))
+                          (assoc request :identity)))
+              (then handler)
               (else (constantly {:status 401
                                  :body {:msg "bad auth token"}})))))})
 
@@ -67,7 +67,7 @@
               (else helper/format-fail))))})
 
 (def room-slug->room
-  {:name ::project-slug->place
+  {:name ::room-slug->room
    :description "lookups the room by rooom and place slug"
    :wrap (fn [handler]
            (fn [{{:keys [store-db]} :store
@@ -83,7 +83,7 @@
               (else helper/format-fail))))})
 
 (def room-id->room
-  {:name ::project-slug->place
+  {:name ::room-id->room
    :description "lookups the  room by id"
    :wrap (fn [handler]
            (fn [{{:keys [store-db]} :store
@@ -95,6 +95,30 @@
                        (handler (assoc request :room %))
                        {:status 403
                         :body {:error "no room with such id" :details {:room/id room-id}}}))
+              (else helper/format-fail))))})
+
+(def book-id->book
+  {:name ::book-id->book
+   :description "lookups the  room by id"
+   :wrap (fn [handler]
+           (fn [{{:keys [store-db]} :store
+                 {user-eid :db/id user-role :user/role} :identity
+                 {{:keys [book-id]} :path} :parameters
+                 :as request}]
+             (->>
+
+              (call store/book-by-id store-db  book-id)
+              (then #(cond
+                       (or
+                        (= user-role :admin)
+                        (= user-eid (:book/owner %)))
+                       (handler (assoc request :book %))
+                       %
+                       {:status 401
+                        :body {:error "no access to this book" :details {:book/id book-id}}}
+                       :else
+                       {:status 403
+                        :body {:error "no book with such id" :details {:book/id book-id}}}))
               (else helper/format-fail))))})
 
 (def secret
