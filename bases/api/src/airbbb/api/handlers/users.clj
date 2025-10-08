@@ -1,7 +1,6 @@
 (ns airbbb.api.handlers.users
   (:require
    [airbbb.api.handlers.helper :as helper]
-   [airbbb.api.middleware :as mw]
    [airbbb.store.interface :as store]
    [airbbb.user.interface :as user]
    [fmnoise.flow :refer [call else then]]
@@ -41,24 +40,22 @@
 
 (defn info [schema]
   {:openapi {:operationId :me-user}
-   :middleware [mw/auth-control]
    :handler
-   (fn [{:keys [identity]}]
+   (fn [{:keys [user]}]
      {:status 200
-      :body (store/e->map identity #{:user/password})})
+      :body (store/e->map user #{:user/password})})
    :responses {200  {:body schema}}})
 
 (defn patch [schema]
   {:openapi {:operationId :patch-user}
-   :middleware [mw/auth-control]
    :parameters {:body   (-> schema
                             (mu/select-keys  [:user/name :user/role])
                             mu/optional-keys)}
    :handler
-   (fn [{:keys [store identity]
+   (fn [{:keys [store user]
          {:keys [body]} :parameters}]
 
-     (->> (call user/patch-pipe store identity body)
+     (->> (call user/patch-pipe store user body)
           (then   (partial assoc
                            {:status 200} :body))
           (else helper/format-fail)))

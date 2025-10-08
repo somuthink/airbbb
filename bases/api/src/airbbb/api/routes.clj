@@ -18,12 +18,16 @@
      :include-secret true
      :post (users-h/auth user-schema)}]
    ["/users"
-    {:tags #{"users"}
-     :conflicting true
-     :post (users-h/create user-schema)
-     :get (users-h/info user-schema)
-     :patch (users-h/patch user-schema)
-     :delete (helper-h/delete :identity)}]
+    {:tags #{"users"}}
+    [""
+     {:conflicting true
+      :post (users-h/create user-schema)}]
+    ["/:user-identity"
+     {:parameters {:path [:map [:user-identity {:default :me} :string]]}
+      :middleware [mw/auth-control mw/user-identity->user]
+      :get (users-h/info user-schema)
+      :patch (users-h/patch user-schema)
+      :delete (helper-h/delete :identity)}]]
    ["/places"
     [""
      {:tags #{"places"}
