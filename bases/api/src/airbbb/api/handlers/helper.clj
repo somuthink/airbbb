@@ -2,6 +2,9 @@
   (:require
    [airbbb.store.interface :as store]))
 
+(def fail-schema {:body [:map [:error :string]
+                         [:details :any]]})
+
 (defn format-fail [fail]
   (tap> fail)
   (let [{:keys [code] :or {code 500} :as data} (ex-data fail)]
@@ -12,6 +15,7 @@
 (defn delete [entity-key]
   {:handler
    (fn [{{:keys [store-conn]} :store :as req}]
+     (tap> (entity-key req))
      (store/excise store-conn (-> req entity-key :db/id))
      {:status 204
       :body {}})
