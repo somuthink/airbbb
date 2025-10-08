@@ -1,21 +1,16 @@
-(ns airbbb.store.core)
+(ns airbbb.store.core
+  (:require
+   [clojure.walk :as w]))
 
 (defn e->map
   [e ignore-keys]
-  (into {}
-        (map (fn [[k v]]
-               (cond
-                 (ignore-keys k)
-                 nil
-
-                 (instance? datomic.query.EntityMap v)
-                 [k (e->map v ignore-keys)]
-
-                 (and (coll? v)
-                      (every? #(instance? datomic.query.EntityMap %) v))
-                 [k (mapv #(e->map % ignore-keys) v)]
-                 :else [k v])))
-        e))
+  (w/prewalk
+   (fn [x]
+     (if (instance? datomic.query.EntityMap x)
+       (apply dissoc
+              (into {} x) ignore-keys)
+       x))
+   e))
 
 (defn remap-query
   [{args :args :as m}]
