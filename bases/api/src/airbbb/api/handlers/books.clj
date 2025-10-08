@@ -21,7 +21,15 @@
                  (then   (partial assoc
                                   {:status 200} :body))
                  (else helper/format-fail)))
-     :responses {200 {:body [:vector (mu/merge start-end-schema  room-schema)]}}}))
+     :responses {200 {:body [:vector    (mu/assoc room-schema :room/books [:map {:closed false}])]}
+                 400 helper/fail-schema}}))
+
+(defn room-infos [schema]
+  {:middleware [mw/auth-control [mw/role :admin]]
+   :handler (fn [{:keys [room]}]
+              {:status 200
+               :body (or  (:room/books room) [])})
+   :responses {200 {:body [:vector (mu/dissoc schema :book/owner)]}}})
 
 (defn create [schema]
   {:middleware [mw/auth-control]
@@ -30,7 +38,6 @@
                           (mu/dissoc :book/owner))}
    :handler (fn [{:keys [store room identity]
                   {:keys [body]} :parameters}]
-              (tap> body)
               (->>
                (book/create-pipe store identity room body)
                (then   (partial assoc

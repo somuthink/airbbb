@@ -68,7 +68,11 @@
        :delete (helper-h/delete :room)}]
      ["/books"
       {:tags #{"books"}
-       :get placeholder-handler
+       :get (books-h/room-infos book-schema)
        :post (books-h/create book-schema)}]]]
 
-   ["/books/:book-id"]])
+   ["/books/:book-id"
+    {:tags #{"books"}
+     :parameters {:path [:map [:book-id :uuid]]}
+     :middleware [mw/auth-control mw/book-id->book]
+     :delete (helper-h/delete :book)}]])

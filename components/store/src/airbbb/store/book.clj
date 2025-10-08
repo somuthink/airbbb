@@ -2,6 +2,9 @@
   (:require
    [datomic.api :as d]))
 
+(defn by-id [db id]
+  (d/entity db [:book/id id]))
+
 (def rules
   '[[(available ?room ?pred-book-start ?pred-book-end)
      (or-join [?room ?pred-book-start ?pred-book-end]
@@ -20,8 +23,6 @@
            :in $ % ?room ?book-start ?book-end
            :where (available ?room ?book-start ?book-end)] db rules room-eid start end))))
 
-(defn pull-all [db]
-  (d/q '[:find (pull ?book [*])
-         :where [?book :book/id]] db))
+
 
 

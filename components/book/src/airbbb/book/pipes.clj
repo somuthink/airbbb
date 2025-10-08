@@ -1,6 +1,7 @@
 (ns airbbb.book.pipes
   (:require
    [airbbb.book.prepare :as prepare]
+   [airbbb.book.process :as process]
    [airbbb.store.interface :as store]
    [fmnoise.flow :refer [call fail-with then then-call]]))
 
@@ -14,7 +15,7 @@
                         :data (assoc data :code 400)})))
    (then-call (fn [data]  (store/transact store-conn [data])  data))))
 
-(defn avilable [{:keys [store-db]} {place-eid :db/id} start end days]
+(defn avilable [{:keys [store-db]} {place-eid :db/id :as place} start end days]
   (->>
    (cond
      (and start end (nil? days))
@@ -26,15 +27,12 @@
                  :data {:code 400}}))
    (then-call #(case %
                  :start-end (store/pull-rooms-by-place-book-start-end store-db place-eid start end)
-                 :days nil))
+                 :days (-> place
+                           :place/rooms
+                           (store/e->map [])
+                           (process/available-rooms days (java.util.Date.)))))
    (then #(if (not-empty %) %
               (fail-with {:msg "no rooms available for this book options"
                           :data {:code 404}})))))
 
-(defn patch [{:keys [store-conn]}
-             {eid :db/id}
-             data]
-  (->>
-   (call store/change store-conn eid)
-   (then-call #(store/pull-after-tx % '[* {:place/rooms []}] eid))))
 

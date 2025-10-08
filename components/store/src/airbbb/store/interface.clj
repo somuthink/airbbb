@@ -57,6 +57,9 @@
 
 ;; books
 
+(defn book-by-id [db book-id]
+  (book/by-id db book-id))
+
 (defn book-available? [db room-eid book-start book-end]
   (book/available? db room-eid book-start book-end))
 
