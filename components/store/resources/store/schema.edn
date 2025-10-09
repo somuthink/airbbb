@@ -109,4 +109,23 @@
    :db/valueType :db.type/instant
    :db/index true
    :db/cardinality :db.cardinality/one
-   :db/doc         "end time of the book"}]}
+   :db/doc         "end time of the book"}]
+
+ :flight
+ [{:db/ident :flight/id
+   :db/valueType :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc "flight uuid"}
+  {:db/ident :flight/from
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/doc "where flight starts from"}
+  {:db/ident :flight/to
+   :db/valueType :db.type/string
+   :db/cardinality :db.cardinality/one
+   :db/doc "where flight goes to"}
+  {:db/ident :flight/amount
+   :db/valueType :db.type/long
+   :db/cardinality :db.cardinality/one
+   :db/doc "how many flights can be bought"}]}

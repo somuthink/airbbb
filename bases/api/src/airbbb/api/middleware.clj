@@ -141,6 +141,21 @@
                           :body {:error "no user with such id" :details {:user/id user-identity}}}))
                 (else helper/format-fail)))))})
 
+(def flight-id->flight
+  {:name ::flight-id->flight
+   :description "lookups the  flight by id"
+   :wrap (fn [handler]
+           (fn [{{:keys [store-db]} :store
+                 {{:keys [flight-id]} :path} :parameters
+                 :as request}]
+             (->>
+              (call store/flight-by-id store-db  flight-id)
+              (then #(if %
+                       (handler (assoc request :flight %))
+                       {:status 401
+                        :body {:error "no flight with such id" :details {:flight/id flight-id}}}))
+              (else helper/format-fail))))})
+
 (def secret
   {:name ::secret
    :description "Middleware that adds jwt secret to req"

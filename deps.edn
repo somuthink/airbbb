@@ -6,6 +6,7 @@
                                poly/place {:local/root "components/place"}
                                poly/room {:local/root "components/room"}
                                poly/book {:local/root "components/book"}
+                               poly/flight {:local/root "components/flight"}
 
                                poly/api {:local/root "bases/api"}
 

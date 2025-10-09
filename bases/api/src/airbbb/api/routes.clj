@@ -1,6 +1,7 @@
 (ns airbbb.api.routes
   (:require
    [airbbb.api.handlers.books :as books-h]
+   [airbbb.api.handlers.flights :as flights-h]
    [airbbb.api.handlers.helper :as helper-h]
    [airbbb.api.handlers.places :as places-h]
    [airbbb.api.handlers.rooms :as rooms-h]
@@ -12,7 +13,8 @@
 (defn routes [{user-schema :user
                place-schema :place
                room-schema :room
-               book-schema :book}]
+               book-schema :book
+               flight-schema :flight}]
   [["/auth"
     {:tags #{"auth"}
      :include-secret true
@@ -78,9 +80,20 @@
       {:tags #{"books"}
        :get (books-h/room-infos book-schema)
        :post (books-h/create book-schema)}]]]
-
    ["/books/:book-id"
     {:tags #{"books"}
      :parameters {:path [:map [:book-id :uuid]]}
      :middleware [mw/auth-control mw/book-id->book]
-     :delete (helper-h/delete :book)}]])
+     :delete (helper-h/delete :book)}]
+   ["/flights"
+    {:tags #{"flights"}}
+    [""
+     {:post (flights-h/create flight-schema)
+      :get placeholder-handler}]
+    ["/:flight-id"
+     {:parameters {:path [:map [:flight-id :uuid]]}
+      :middleware [mw/flight-id->flight]
+      :get (flights-h/info flight-schema)
+      :patch (flights-h/patch flight-schema)
+      :post placeholder-handler
+      :delete (helper-h/delete :flight)}]]])

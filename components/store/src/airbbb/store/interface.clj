@@ -2,6 +2,7 @@
   (:require
    [airbbb.store.book :as book]
    [airbbb.store.core :as core]
+   [airbbb.store.flight :as flight]
    [airbbb.store.init :as init]
    [airbbb.store.place :as place]
    [airbbb.store.room :as room]
@@ -63,6 +64,14 @@
 (defn book-available? [db room-eid book-start book-end]
   (book/available? db room-eid book-start book-end))
 
+;; flights
+
+(defn flight-by-id [db flight-id]
+  (flight/by-id db flight-id))
+
+(defn flight-by-from-to [db flight-from flight-to]
+  (flight/by-from-to db flight-from flight-to))
+
 (defn change [conn eid data]
   @(d/transact conn [(assoc data :db/id eid)]))
 
@@ -72,11 +81,9 @@
 (defn sort-order [sort-cond order s]
   (core/sort-order sort-cond order s))
 
-(defn e->map [e ignore-keys]
-  (core/e->map e ignore-keys))
-
-(defn pull-e [db {:keys [db/id]}]
-  (d/pull db '[] id))
+(defn e->map ([e ignore-keys]
+              (core/e->map e ignore-keys))
+  ([e] (e->map e [])))
 
 (defn pull-after-tx
   ([tx e]
