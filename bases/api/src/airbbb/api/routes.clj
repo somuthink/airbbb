@@ -14,7 +14,8 @@
                place-schema :place
                room-schema :room
                book-schema :book
-               flight-schema :flight}]
+               flight-schema :flight
+               ticket-schema :ticket}]
   [["/auth"
     {:tags #{"auth"}
      :include-secret true
@@ -95,5 +96,5 @@
       :middleware [mw/flight-id->flight]
       :get (flights-h/info flight-schema)
       :patch (flights-h/patch flight-schema)
-      :post placeholder-handler
+      :post (flights-h/buy-ticket ticket-schema)
       :delete (helper-h/delete :flight)}]]])

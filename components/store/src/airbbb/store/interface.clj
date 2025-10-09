@@ -72,6 +72,9 @@
 (defn flight-by-from-to [db flight-from flight-to]
   (flight/by-from-to db flight-from flight-to))
 
+(defn flight-available? [db flight-eid ticket-amount]
+  (flight/available? db flight-eid ticket-amount))
+
 (defn change [conn eid data]
   @(d/transact conn [(assoc data :db/id eid)]))
 

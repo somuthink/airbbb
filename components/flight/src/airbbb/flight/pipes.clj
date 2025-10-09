@@ -4,7 +4,20 @@
    [airbbb.store.interface :as store]
    [fmnoise.flow :refer [call fail-with then then-call]]))
 
-(defn create [{:keys [store-db store-conn]} {:keys [flight/from flight/to] :as data}]
+(defn buy-tickets [{:keys [store-db store-conn]}
+                   {user-eid :db/id}
+                   {eid :db/id :keys [flight/amount]} ticket-amount]
+  (->>
+   (call store/flight-available? store-db eid ticket-amount)
+   (then #(if %
+            (prepare/buy-ticket user-eid eid ticket-amount)
+            (fail-with {:msg "no space rest on this flight"
+                        :data {:code 409
+                               :flight/amount amount}})))
+   (then-call (fn [{:keys [user/tickets] :as data}] (store/transact store-conn [data]) tickets))))
+
+(defn create [{:keys [store-db store-conn]}
+              {:keys [flight/from flight/to] :as data}]
   (->>
    (call store/flight-by-from-to store-db from to)
    (then #(if-not %

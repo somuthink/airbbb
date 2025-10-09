@@ -7,6 +7,17 @@
    [fmnoise.flow :refer [call else then]]
    [malli.util :as mu]))
 
+(defn buy-ticket [ticket-schema]
+  {:middleware [mw/auth-control]
+   :parameters {:body [:map [:ticket/amount {:default 1} :int]]}
+   :handler (fn [{:keys [store identity flight]
+                  {{ticket-amount :ticket/amount} :body} :parameters}]
+              (->> (call flight/buy-tickets-pipe store identity flight ticket-amount)
+                   (then   (partial assoc
+                                    {:status 200} :body))
+                   (else helper/format-fail)))
+   :responses {200 {:body [:vector (mu/dissoc ticket-schema :ticket/flight)]}}})
+
 (defn info [schema]
   {:handler
    (fn [{:keys [flight]}]
@@ -24,7 +35,7 @@
                    (then   (partial assoc
                                     {:status 200} :body))
                    (else helper/format-fail)))
-   :responses {200 {:body schema}}})
+   :responses {200 {:body  schema}}})
 
 (defn patch [schema]
   {:middleware [mw/auth-control    [mw/role :admin]]

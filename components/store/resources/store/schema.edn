@@ -21,9 +21,10 @@
    :db/valueType :db.type/keyword
    :db/cardinality :db.cardinality/one
    :db/doc         "user admin status"}
-  {:db/ident :user/flights
+  {:db/ident :user/tickets
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/many
+   :db/isComponent true
    :db/doc         "user flight tickets"}]
 
  :place
@@ -128,4 +129,14 @@
   {:db/ident :flight/amount
    :db/valueType :db.type/long
    :db/cardinality :db.cardinality/one
-   :db/doc "how many flights can be bought"}]}
+   :db/doc "how many flights can be bought"}]
+ :ticket
+ [{:db/ident :ticket/id
+   :db/valueType :db.type/uuid
+   :db/cardinality :db.cardinality/one
+   :db/unique :db.unique/value
+   :db/doc "ticket uuid"}
+  {:db/ident :ticket/flight
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one
+   :db/doc "flight that this ticket was bough to"}]}
