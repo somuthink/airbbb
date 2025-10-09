@@ -61,5 +61,13 @@
           (else helper/format-fail)))
    :responses {200 {:body schema}}})
 
+(defn books [book-schema]
+  {:openapi {:operationId :user-books}
+   :handler
+   (fn [{:keys [user]}]
+     {:status 200
+      :body (store/e->map (:book/_owner user) [:book/owner])})
+   :responses {200 {:body [:vector book-schema]}}})
+
 
 

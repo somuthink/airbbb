@@ -24,10 +24,14 @@
       :post (users-h/create user-schema)}]
     ["/:user-identity"
      {:parameters {:path [:map [:user-identity {:default :me} :string]]}
-      :middleware [mw/auth-control mw/user-identity->user]
-      :get (users-h/info user-schema)
-      :patch (users-h/patch user-schema)
-      :delete (helper-h/delete :identity)}]]
+      :middleware [mw/auth-control mw/user-identity->user]}
+     [""
+      {:get (users-h/info user-schema)
+       :patch (users-h/patch user-schema)
+       :delete (helper-h/delete :identity)}]
+     ["/books"
+      {:tags #{"books"}
+       :get (users-h/books book-schema)}]]]
    ["/places"
     [""
      {:tags #{"places"}

@@ -128,7 +128,7 @@
                  {user-role :user/role :as user} :identity
                  {{:keys [user-identity]} :path} :parameters
                  :as request}]
-             (if (= user-identity :me)
+             (if (= user-identity "me")
                (handler (assoc request :user user))
                (->>
                 (call #(if (= user-role :admin)
