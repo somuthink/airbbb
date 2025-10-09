@@ -67,12 +67,6 @@
                                                                          mt/strip-extra-keys-transformer
                                                                          mt/json-transformer
                                                                          time/validation-transformer)}})
-                            (assoc-in  [:transformers :response] {:default custom-transformer
-                                                                  :formats {"application/json"
-                                                                            (mt/transformer
-                                                                             mt/strip-extra-keys-transformer
-                                                                             mt/json-transformer
-                                                                             time/validation-transformer)}})
                             (dissoc :lite))))
            :middleware (-> opts
                            (dissoc :routes)
