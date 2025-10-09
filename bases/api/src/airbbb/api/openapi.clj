@@ -4,7 +4,7 @@
    [reitit.swagger-ui :as swagger-ui]))
 
 (def json
-  ["/openapi.json"
+  ["/docs/openapi.json"
    {:get {:no-doc true
           :openapi {:info {:title "airbbb-api"
                            :description "openapi3 docs with malli"
@@ -17,8 +17,8 @@
           :handler (openapi/create-openapi-handler)}}])
 
 (def ui-handler (swagger-ui/create-swagger-ui-handler
-                 {:path "/"
+                 {:path "/docs"
                   :config {:validatorUrl nil
-                           :urls [{:name "openapi", :url "api/openapi.json"}]
+                           :urls [{:name "openapi", :url "openapi.json"}]
                            :urls.primaryName "openapi"
                            :operationsSorter "alpha"}}))

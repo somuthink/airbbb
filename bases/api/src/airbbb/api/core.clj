@@ -45,7 +45,8 @@
     conn))
 
 (defmethod ig/init-key :router/routes [_ schema]
-  (into ["/api"  (routes/routes schema)] [openapi/json]))
+  [openapi/json
+   (routes/routes schema)])
 
 (defmethod ig/init-key :app/router [_ {:keys [routes] :as opts}]
   (ring/router
