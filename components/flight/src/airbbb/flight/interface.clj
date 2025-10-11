@@ -2,6 +2,9 @@
   (:require
    [airbbb.flight.pipes :as pipes]))
 
+(defn transfers-pipe [store from to amount date]
+  (pipes/transfers store from to amount date))
+
 (defn buy-tickets-pipe [store user-identity identity amount]
   (pipes/buy-tickets store user-identity identity amount))
 

@@ -90,7 +90,7 @@
     {:tags #{"flights"}}
     [""
      {:post (flights-h/create flight-schema)
-      :get placeholder-handler}]
+      :get (flights-h/transfers flight-schema)}]
     ["/:flight-id"
      {:parameters {:path [:map [:flight-id :uuid]]}
       :middleware [mw/flight-id->flight]

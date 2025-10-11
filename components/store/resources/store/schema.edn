@@ -126,6 +126,18 @@
    :db/valueType :db.type/string
    :db/cardinality :db.cardinality/one
    :db/doc "where flight goes to"}
+  {:db/ident :flight/time
+   :db/valueType :db.type/instant
+   :db/cardinality :db.cardinality/one
+   :db/doc "when flight starts"}
+  {:db/ident :flight/duration
+   :db/valueType :db.type/long
+   :db/cardinality :db.cardinality/one
+   :db/doc "how many minutes flight goes"}
+  {:db/ident :flight/price
+   :db/valueType :db.type/long
+   :db/cardinality :db.cardinality/one
+   :db/doc "how much flight costs"}
   {:db/ident :flight/amount
    :db/valueType :db.type/long
    :db/cardinality :db.cardinality/one

@@ -1,8 +1,14 @@
 (ns airbbb.flight.pipes
   (:require
    [airbbb.flight.prepare :as prepare]
+   [airbbb.flight.process :as process]
    [airbbb.store.interface :as store]
    [fmnoise.flow :refer [call fail-with then then-call]]))
+
+(defn transfers [{:keys [store-db]}
+                 from to amount time]
+  (->> (call store/flight-transfers-by-from-to-amount store-db from to amount time)
+       (then process/map-of-transfers)))
 
 (defn buy-tickets [{:keys [store-db store-conn]}
                    {user-eid :db/id}

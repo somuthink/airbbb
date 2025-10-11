@@ -7,6 +7,28 @@
    [fmnoise.flow :refer [call else then]]
    [malli.util :as mu]))
 
+(defn transfers [schema]
+  {:parameters {:query [:map [:ticket/amount {:default 1} :int]
+                        [:flight/from [:vector :string]]
+                        [:flight/to [:vector :string]]
+                        [:flight/date {:optional true} [:vector [:time {:json-schema/format "date"}]]]]}
+   :handler (fn [{:keys [store]
+                  {{ticket-amount :ticket/amount
+                    :keys [flight/from flight/to flight/date]} :query} :parameters}]
+              (->> (call flight/transfers-pipe store from to ticket-amount date)
+                   (then   (partial assoc
+                                    {:status 200} :body))
+                   (else helper/format-fail)))
+   :responses {200 {:body [:vector [:or
+                                    [:map
+                                     [:path/from :string]
+                                     [:path/to :string]
+                                     [:path/tags [:set [:enum :cheapest :fastest]]]
+                                     [:path/transfers
+                                      [:vector
+                                       (mu/assoc schema :transfer/item :keyword)]]]
+                                    (mu/assoc schema :path/tags  [:set [:enum :cheapest :fastest]])]]}}})
+
 (defn buy-ticket [ticket-schema]
   {:middleware [mw/auth-control]
    :parameters {:body [:map [:ticket/amount {:default 1} :int]]}
