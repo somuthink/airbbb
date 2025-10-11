@@ -58,7 +58,12 @@
                       (let [custom-transformer (mt/transformer
                                                 mt/strip-extra-keys-transformer
                                                 mt/string-transformer
-                                                time/validation-transformer)]
+                                                time/validation-transformer
+                                                (mt/transformer
+                                                 {:name :->collection
+                                                  :decoders {:vector (fn [x] (if (sequential? x) x [x]))}
+                                                  :encoders {}}
+                                                 mt/string-transformer))]
 
                         (-> rcm/default-options
                             (assoc-in  [:transformers :string :default] custom-transformer)
