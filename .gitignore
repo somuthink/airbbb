@@ -18,9 +18,8 @@
 *.iws
 *.ipr
 
-# Cursive Clojure plugin
-.idea/replstate.xml
-*.iml
+
+.portal
 
 /example/example/**
 artifacts
