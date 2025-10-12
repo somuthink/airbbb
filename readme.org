@@ -1,4 +1,5 @@
 * Перед запуском
+
 ** Склонируйте репозиторий
 #+BEGIN_SRC shell
   git clone https://github.com/somuthink/airbbb
@@ -21,16 +22,16 @@
 }
 EOF
 #+END_SRC
-** При надобности поменяйте порты указанные в docker-compose.yml
+** При надобности поменяйте порты указанные в ~docker-compose.yml~
 
 * Запуск
 #+BEGIN_SRC shell
   docker compose up
 #+END_SRC
-на [[localhost:8080][localhost:8080]] и [[localhost:8000/docs]] находиться апи и его спецификация соответственно
+на [[http://localhost:8080][localhost:8080]] и [[http://localhost:8000/docs][localhost:8080/docs]] находиться апи и его спецификация соответственно
 | api root | swagger-ui |
 |--------+-----------|
-| [[localhost:8080][/]]       | /[[localhost:8080/docs][docs]]      |
+| [[http://localhost:8080][/]]       | [[http://localhost:8080/docs][/docs]]      |
 
 ** Для отчистки БД просто удалите папку ~/storage~
 #+BEGIN_SRC shell
