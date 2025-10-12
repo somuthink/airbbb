@@ -17,7 +17,9 @@
    [reitit.dev.pretty :as pretty]
    [reitit.ring :as ring]
    [reitit.ring.spec :as spec]
-   [ring.adapter.jetty :as jetty]))
+   [ring.adapter.jetty :as jetty])
+  (:gen-class)
+  )
 
 (defmethod ig/init-key :schema/load [_ {:keys [resource-prefix]}]
   (-> (str  resource-prefix  ".edn")
@@ -100,4 +102,5 @@
    "api/config.edn"
    io/resource
    aero/read-config
+   (dissoc :secrets)
    ig/init))
