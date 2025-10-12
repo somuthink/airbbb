@@ -1,1 +1,46 @@
+* Перед запуском
+** Склонируйте репозиторий
+#+BEGIN_SRC shell
+  git clone https://github.com/somuthink/airbbb
+
+  cd airbbb
+#+END_SRC
+
+** Поставьте [[https://docs.docker.com/engine/install/][Docker]], если он еще не установлен
+** Поместите в корень репозитория файл ~.secrets.edn~ с =base64= ключом для подписи jwt
+#+BEGIN_SRC clojure
+   {
+    :airbbb-jwt-secret    "XXXXXX"
+  }
+#+END_SRC
+**** команада для быстрого создания файла с уже готовым ключом 
+#+BEGIN_SRC shell
+  cat <<EOF > .secrets.edn
+{
+    :airbbb-jwt-secret    "ohi66jhYMDaPyfZm9me8ZsINc2aw+uqmFKE9kT2vKzo="
+}
+EOF
+#+END_SRC
+** При надобности поменяйте порты указанные в docker-compose.yml
+
 * Запуск
+#+BEGIN_SRC shell
+  docker compose up
+#+END_SRC
+на [[localhost:8080][localhost:8080]] и [[localhost:8000/docs]] находиться апи и его спецификация соответственно
+| api root | swagger-ui |
+|--------+-----------|
+| [[localhost:8080][/]]       | /[[localhost:8080/docs][docs]]      |
+
+** Для отчистки БД просто удалите папку ~/storage~
+#+BEGIN_SRC shell
+  rm -rf /storage
+#+END_SRC
+
+
+
+
+
+
+
+
