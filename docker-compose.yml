@@ -23,7 +23,7 @@ services:
       BACK_PORT: 8080
       DB_URI: datomic:sql://app?jdbc:sqlite:/usr/storage/sqlite.db
     volumes:
-      - ~/.secrets.edn:/root/.secrets.edn:ro
+      - ./.secrets.edn:/root/.secrets.edn:ro
       - ./storage:/usr/storage
     depends_on:
       datomic-transactor:
