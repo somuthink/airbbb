@@ -15,6 +15,9 @@
 (defn create-conn [uri]
   (d/connect uri))
 
+(defn init-wait-for [uri]
+  (init/wait-for uri))
+
 (defn init-schema [conn schema]
   @(d/transact conn schema))
 

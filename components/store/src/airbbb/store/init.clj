@@ -1,4 +1,24 @@
-(ns airbbb.store.init)
+(ns airbbb.store.init
+  (:require
+   [datomic.api :as d]))
+
+(defn- connect [uri]
+  (try
+    (d/connect uri)
+    (catch Exception e (println e))))
+
+(defn wait-for
+  [uri & [{:keys [retries sleep-ms]
+           :or {retries 20 sleep-ms 2000}}]]
+  (loop [attempt 1]
+    (println (format "attempting datomic connect (%d/%d)..." attempt retries))
+    (if-let [conn (connect uri)]
+      (do
+        (println "connected to datomoc transactor")
+        conn)
+      (if (< attempt retries)
+        (recur (do (Thread/sleep sleep-ms) (inc attempt)))
+        (throw (ex-info "failed to connect to datomic after retries." {}))))))
 
 (defn datomic->malli [schema]
   (reduce

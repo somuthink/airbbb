@@ -18,8 +18,7 @@
    [reitit.ring :as ring]
    [reitit.ring.spec :as spec]
    [ring.adapter.jetty :as jetty])
-  (:gen-class)
-  )
+  (:gen-class))
 
 (defmethod ig/init-key :schema/load [_ {:keys [resource-prefix]}]
   (-> (str  resource-prefix  ".edn")
