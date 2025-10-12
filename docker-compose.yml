@@ -1,9 +1,34 @@
+version: "3.9"
+
 services:
-  datomic-airbbb-transactor:
+  datomic-transactor:
     image: filipesilva/datomic-pro-sqlite:latest
     ports:
       - "4334:4334"
+    environment:
+      - ALT_HOST=datomic-airbbb-transactor
     volumes:
       - ./storage:/usr/storage
+      - ./transactor.properties:/usr/datomic-pro/config/transactor.properties:ro
+      
+  web-api:
+    image: web-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      HOME: /root
+      BACK_PORT: 8080
+      DB_URI: datomic:sql://app?jdbc:sqlite:/usr/storage/sqlite.db
+    volumes:
+      - ~/.secrets.edn:/root/.secrets.edn:ro
+      - ./storage:/usr/storage
+    depends_on:
+      datomic-transactor:
+        condition: service_healthy
 
 
+      
+      
