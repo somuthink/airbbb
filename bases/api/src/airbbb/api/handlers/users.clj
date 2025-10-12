@@ -43,7 +43,7 @@
    :handler
    (fn [{:keys [user]}]
      {:status 200
-      :body (store/e->map user #{:user/password})})
+      :body (store/e->map user #{:user/password :user/tickets})})
    :responses {200  {:body schema}}})
 
 (defn patch [schema]
@@ -66,8 +66,16 @@
    :handler
    (fn [{:keys [user]}]
      {:status 200
-      :body (store/e->map (:book/_owner user) [:book/owner])})
+      :body (or (store/e->map (:book/_owner user) [:book/owner]) [])})
    :responses {200 {:body [:vector book-schema]}}})
+
+(defn tickets [ticket-schema]
+  {:openapi {:operationId :user-tickets}
+   :handler
+   (fn [{:keys [user]}]
+     {:status 200
+      :body (or (store/e->map (:user/tickets user)) [])})
+   :responses {200 {:body [:vector  ticket-schema]}}})
 
 
 

@@ -34,7 +34,10 @@
        :delete (helper-h/delete :identity)}]
      ["/books"
       {:tags #{"books"}
-       :get (users-h/books book-schema)}]]]
+       :get (users-h/books book-schema)}]
+     ["/tickets"
+      {:tags #{"flights"}
+       :get (users-h/tickets ticket-schema)}]]]
    ["/places"
     [""
      {:tags #{"places"}

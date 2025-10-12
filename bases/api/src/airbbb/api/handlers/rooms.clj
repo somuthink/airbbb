@@ -28,7 +28,7 @@
    :responses {200 {:body [:vector schema]}}})
 
 (defn place [schema]
-  {:parameters {:query (mu/dissoc  query-filter-schema :room/name)}
+  {:parameters {:query (mu/dissoc query-filter-schema :place/name)}
    :handler (fn [{:keys [store place]
                   {{:keys [sort order room/type room/num-rooms room/occupancy]} :query} :parameters}]
               (->> (call room/place-query-pipe store place sort order type num-rooms occupancy)
