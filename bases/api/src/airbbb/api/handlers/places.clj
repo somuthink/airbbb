@@ -50,6 +50,7 @@
   {:openapi {:operationId :patch-place}
    :parameters {:body   (-> schema
                             (mu/dissoc :place/rooms)
+                            (mu/dissoc :place/slug)
                             mu/optional-keys)}
    :handler
    (fn [{:keys [store place]
@@ -59,4 +60,4 @@
           (then   (partial assoc
                            {:status 200} :body))
           (else helper/format-fail)))
-   :responses {200 {:body (mu/dissoc schema :place/rooms)}}})
+   :responses {200 {:body (mu/dissoc schema  :place/rooms)}}})

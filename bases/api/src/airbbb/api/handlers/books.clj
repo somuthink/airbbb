@@ -21,7 +21,12 @@
                  (then   (partial assoc
                                   {:status 200} :body))
                  (else helper/format-fail)))
-     :responses {200 {:body [:vector    (mu/assoc room-schema :room/books [:map {:closed false}])]}
+     :responses {200 {:body [:vector
+                             [:or (mu/assoc room-schema  :room/books  [:map  {:optional true
+                                                                                :closed false}])
+                              room-schema 
+                              ]
+                             ]}
                  400 helper/fail-schema}}))
 
 (defn room-infos [schema]

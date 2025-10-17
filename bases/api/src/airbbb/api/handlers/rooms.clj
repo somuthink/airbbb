@@ -63,6 +63,7 @@
   {:openapi {:operationId :patch-room}
    :parameters {:body   (-> schema
                             (mu/dissoc :room/id)
+                            (mu/dissoc :room/slug)
                             (mu/dissoc :room/books)
                             mu/optional-keys)}
    :handler
@@ -72,4 +73,4 @@
           (then   (partial assoc
                            {:status 200} :body))
           (else helper/format-fail)))
-   :responses {200 {:body (mu/dissoc schema :room/books)}}})
+   :responses {200 {:body schema}}})
