@@ -17,10 +17,9 @@
                         [(>= ?book-end ?pred-book-start)]))]])
 
 (defn available? [db room-eid start end]
-  (not
-   (d/q '[:find ?room .
-          :in $ % ?room ?book-start ?book-end
-          :where (available ?room ?book-start ?book-end)] db rules room-eid start end)))
+  (d/q '[:find ?room .
+         :in $ % ?room ?book-start ?book-end
+         :where (available ?room ?book-start ?book-end)] db rules room-eid start end))
 
 
 
